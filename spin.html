@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thotivities Spin Result</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="result-card">
+      <div class="badge">THOTIVITES247</div>
+      <h1>Thotivities</h1>
+      <p class="tagline">The Freaky Content Roulette</p>
+
+      <div id="symbol" class="symbol">❓</div>
+
+      <h2 id="title">Mystery Spin Result</h2>
+      <p id="category" class="category">GENERAL THOTIVITIES</p>
+
+      <div class="rating-box">
+        <div id="ratingNumber" class="rating-number">0 / 10</div>
+        <div id="eggplants" class="eggplants"></div>
+        <div id="ratingLabel" class="rating-label">Unrated</div>
+      </div>
+
+      <p id="notes" class="notes"></p>
+
+      <div class="actions">
+        <button onclick="copyLink()">Copy Link</button>
+        <a class="button secondary" href="index.html">Home</a>
+      </div>
+
+      <p class="footer">Shared from the Thotivities app.</p>
+    </section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const symbol = params.get("symbol") || "❓";
+    const title = params.get("title") || "Mystery Spin Result";
+    const category = params.get("category") || "GENERAL THOTIVITIES";
+    const rating = Math.max(0, Math.min(10, parseInt(params.get("rating") || "0", 10)));
+    const notes = params.get("notes") || "";
+
+    const labels = {
+      1: "Sucks Dino Dick",
+      2: "Booty Cheeks",
+      3: "Kinda Mid",
+      4: "Warm Up",
+      5: "Decent",
+      6: "Spicy",
+      7: "Dangerously Fun",
+      8: "Elite Chaos",
+      9: "Legendary",
+      10: "Certified Thotivity"
+    };
+
+    document.getElementById("symbol").textContent = symbol;
+    document.getElementById("title").textContent = title;
+    document.getElementById("category").textContent = category;
+    document.getElementById("ratingNumber").textContent = rating + " / 10";
+    document.getElementById("eggplants").textContent = rating > 0 ? "🍆".repeat(rating) : "No rating yet";
+    document.getElementById("ratingLabel").textContent = labels[rating] || "Unrated";
+    document.getElementById("notes").textContent = notes;
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        alert("Spin link copied!");
+      });
+    }
+  </script>
+</body>
+</html>
