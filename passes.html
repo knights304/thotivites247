@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spin Passes | Thotivites247</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">🎰</span><span>Thotivites247</span></a>
+    <nav><a href="spin.html">Spin</a><a href="submit.html">Submit</a><a href="passes.html">Passes</a></nav>
+  </header>
+
+  <main class="page">
+    <section class="result-card">
+      <div class="badge">SPIN ACCESS</div>
+      <h1>Passes</h1>
+      <p class="tagline">Generate a shareable spin link</p>
+
+      <div class="form-box"><label for="passName">Guest name</label><input id="passName" type="text" maxlength="32" placeholder="Guest, friend, creator, etc." /></div>
+
+      <div class="pass-grid">
+        <button onclick="makePass(1)">1 Spin</button>
+        <button onclick="makePass(2)">2 Spins</button>
+        <button onclick="makePass(4)">4 Spins</button>
+        <button onclick="makePass(8)">8 Spins</button>
+      </div>
+
+      <div class="form-box"><label for="customSpinCount">Custom amount</label><input id="customSpinCount" type="number" min="1" max="99" placeholder="Custom spins" /></div>
+      <button onclick="makeCustomPass()">Create Custom Pass</button>
+
+      <div class="share-card hidden" id="passCard"><p id="passOutput"></p><a id="passLink" class="button" href="#">Open Pass</a></div>
+      <div class="actions"><button onclick="copyPass()">Copy Link</button><button onclick="sharePass()">Share Link</button></div>
+    </section>
+  </main>
+  <script src="site.js"></script>
+</body>
+</html>

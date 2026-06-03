@@ -7,38 +7,50 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">🎰</span><span>Thotivites247</span></a>
+    <nav><a href="spin.html">Spin</a><a href="submit.html">Submit</a><a href="passes.html">Passes</a></nav>
+  </header>
+
   <main class="page">
     <section class="result-card">
-      <div class="badge">THOTIVITES247</div>
+      <div class="badge">WEB SPIN</div>
       <h1>Thotivities</h1>
       <p class="tagline">The Freaky Content Roulette</p>
+
+      <div class="spin-limit hidden" id="spinLimitBox"><strong id="spinLimitText">Spin pass active</strong></div>
 
       <div class="form-box" id="nameBox">
         <label for="spinnerName">Who is spinning?</label>
         <input id="spinnerName" type="text" maxlength="32" placeholder="Enter your name" />
       </div>
 
-      <div class="wheel-logo small-wheel" id="wheel">
-        <div class="wheel-ring">
-          <span>❓</span><span>🔥</span><span>🎲</span>
-          <span>💋</span><span>😈</span><span>🎭</span>
+      <div class="avatar-picker" id="avatarPicker">
+        <button class="avatar active" data-avatar="🔥">🔥</button>
+        <button class="avatar" data-avatar="👑">👑</button>
+        <button class="avatar" data-avatar="💋">💋</button>
+        <button class="avatar" data-avatar="🎲">🎲</button>
+        <button class="avatar" data-avatar="😈">😈</button>
+      </div>
+
+      <div class="wheel-shell">
+        <div class="pointer"></div>
+        <div class="wheel-logo small-wheel" id="wheel">
+          <div class="wheel-ring"><span>❓</span><span>🔥</span><span>🎲</span><span>💋</span><span>😈</span><span>🎭</span></div>
         </div>
       </div>
 
       <div id="mysteryArea" class="mystery-area hidden">
         <p class="small-label">Mystery symbol landed on</p>
         <div id="symbol" class="symbol">❓</div>
-        <button onclick="revealResult()">Reveal Choice</button>
+        <button onclick="revealResult()">Reveal Destiny</button>
       </div>
 
       <div id="resultArea" class="hidden">
         <p id="nameLine" class="name-line">Someone spun:</p>
         <h2 id="title">Mystery Spin Result</h2>
         <p id="category" class="category">GENERAL THOTIVITIES</p>
-        <div class="rating-box">
-          <div class="rating-number">Shareable Spin</div>
-          <div id="resultText" class="notes"></div>
-        </div>
+        <div class="share-card"><p id="resultText"></p><p class="hashtag">#thotivities #Thotivites247</p></div>
         <div class="actions">
           <button onclick="shareResult()">Share Result</button>
           <button onclick="copyResult()">Copy Result</button>
@@ -54,120 +66,6 @@
       <p class="footer">Shared from Thotivites247.</p>
     </section>
   </main>
-
-  <script>
-    const thotivities = [
-      { symbol: "🔥", title: "Dance Break Challenge", category: "DANCE CHALLENGE" },
-      { symbol: "🎲", title: "Mystery Content Prompt", category: "VIDEO CHALLENGE" },
-      { symbol: "💋", title: "Compliment Battle", category: "THOT ADVENTURE" },
-      { symbol: "😈", title: "Truth or Dare Roulette", category: "GENERAL THOTIVITIES" },
-      { symbol: "🎭", title: "Create a 15 Second Mystery Reaction", category: "VIDEO CHALLENGE" },
-      { symbol: "👑", title: "Certified Thotivity Free Choice", category: "CERTIFIED THOTIVITY" },
-      { symbol: "⚡", title: "Quick Chaos Challenge", category: "GENERAL THOTIVITIES" },
-      { symbol: "📸", title: "Make a Thumbnail Pose Challenge", category: "VIDEO CHALLENGE" }
-    ];
-
-    let currentSpin = null;
-
-    function cleanName(value) {
-      const cleaned = String(value || "").trim();
-      return cleaned.length ? cleaned : "Someone";
-    }
-
-    function spinWheel() {
-      const wheel = document.getElementById("wheel");
-      document.getElementById("startArea").classList.add("hidden");
-      document.getElementById("resultArea").classList.add("hidden");
-      document.getElementById("mysteryArea").classList.add("hidden");
-
-      wheel.classList.remove("spin-animation");
-      void wheel.offsetWidth;
-      wheel.classList.add("spin-animation");
-
-      setTimeout(() => {
-        const choice = thotivities[Math.floor(Math.random() * thotivities.length)];
-        currentSpin = {
-          name: cleanName(document.getElementById("spinnerName").value),
-          ...choice
-        };
-
-        document.getElementById("symbol").textContent = currentSpin.symbol;
-        document.getElementById("mysteryArea").classList.remove("hidden");
-      }, 1600);
-    }
-
-    function revealResult() {
-      if (!currentSpin) return;
-
-      document.getElementById("mysteryArea").classList.add("hidden");
-      document.getElementById("resultArea").classList.remove("hidden");
-      document.getElementById("nameBox").classList.add("hidden");
-
-      document.getElementById("nameLine").textContent = currentSpin.name + " spun:";
-      document.getElementById("title").textContent = currentSpin.symbol + " " + currentSpin.title;
-      document.getElementById("category").textContent = currentSpin.category;
-
-      const text = currentSpin.name + " spun " + currentSpin.symbol + " " +
-        currentSpin.title + " on Thotivites247. Category: " + currentSpin.category;
-
-      document.getElementById("resultText").textContent = text;
-
-      const url = new URL(window.location.href);
-      url.searchParams.set("name", currentSpin.name);
-      url.searchParams.set("symbol", currentSpin.symbol);
-      url.searchParams.set("title", currentSpin.title);
-      url.searchParams.set("category", currentSpin.category);
-      window.history.replaceState({}, "", url);
-    }
-
-    function loadFromLink() {
-      const params = new URLSearchParams(window.location.search);
-      const title = params.get("title");
-      if (!title) return;
-
-      currentSpin = {
-        name: cleanName(params.get("name") || ""),
-        symbol: params.get("symbol") || "❓",
-        title: title,
-        category: params.get("category") || "GENERAL THOTIVITIES"
-      };
-
-      document.getElementById("startArea").classList.add("hidden");
-      revealResult();
-    }
-
-    async function shareResult() {
-      if (!currentSpin) return;
-      const text = document.getElementById("resultText").textContent;
-      const url = window.location.href;
-
-      if (navigator.share) {
-        await navigator.share({ title: "Thotivites247 Spin", text: text, url: url });
-      } else {
-        await navigator.clipboard.writeText(text + "\n" + url);
-        alert("Result copied!");
-      }
-    }
-
-    async function copyResult() {
-      if (!currentSpin) return;
-      const text = document.getElementById("resultText").textContent + "\n" + window.location.href;
-      await navigator.clipboard.writeText(text);
-      alert("Result copied!");
-    }
-
-    function resetSpin() {
-      currentSpin = null;
-      document.getElementById("mysteryArea").classList.add("hidden");
-      document.getElementById("resultArea").classList.add("hidden");
-      document.getElementById("startArea").classList.remove("hidden");
-      document.getElementById("nameBox").classList.remove("hidden");
-      const url = new URL(window.location.href);
-      url.search = "";
-      window.history.replaceState({}, "", url);
-    }
-
-    loadFromLink();
-  </script>
+  <script src="site.js"></script>
 </body>
 </html>

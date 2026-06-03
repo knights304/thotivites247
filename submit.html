@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit Challenge | Thotivites247</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">🎰</span><span>Thotivites247</span></a>
+    <nav><a href="spin.html">Spin</a><a href="submit.html">Submit</a><a href="passes.html">Passes</a></nav>
+  </header>
+
+  <main class="page">
+    <section class="result-card">
+      <div class="badge">COMMUNITY PROMPT</div>
+      <h1>Submit</h1>
+      <p class="tagline">Send a challenge idea to review</p>
+
+      <div class="form-box"><label for="creatorName">Creator name</label><input id="creatorName" type="text" maxlength="32" placeholder="Your name or handle" /></div>
+      <div class="form-box"><label for="challengeText">Challenge</label><textarea id="challengeText" rows="6" placeholder="Example: Create a 15 second dance challenge #thotivities"></textarea></div>
+      <div class="form-box"><label for="categorySelect">Category</label><select id="categorySelect"><option>VIDEO CHALLENGE</option><option>THOT ADVENTURE</option><option>CERTIFIED THOTIVITY</option><option>DANCE CHALLENGE</option><option>GENERAL THOTIVITIES</option></select></div>
+      <div class="form-box"><label for="symbolSelect">Mystery Symbol</label><select id="symbolSelect"><option>❓</option><option>🔥</option><option>🎲</option><option>💋</option><option>😈</option><option>🎭</option><option>👑</option><option>⚡</option><option>📸</option></select></div>
+
+      <div class="actions"><button onclick="generatePrompt()">Generate Prompt</button><button onclick="copyPrompt()">Copy Prompt</button></div>
+      <div class="share-card hidden" id="promptCard"><p id="promptOutput"></p></div>
+      <p class="footer">V1 stores nothing online. Copy this and post it on X from @Thotivites247 or paste it into the app queue.</p>
+    </section>
+  </main>
+  <script src="site.js"></script>
+</body>
+</html>
