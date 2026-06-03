@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Thotivities Spin Result</title>
+  <title>Spin | Thotivites247</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,63 +13,161 @@
       <h1>Thotivities</h1>
       <p class="tagline">The Freaky Content Roulette</p>
 
-      <div id="symbol" class="symbol">❓</div>
-
-      <h2 id="title">Mystery Spin Result</h2>
-      <p id="category" class="category">GENERAL THOTIVITIES</p>
-
-      <div class="rating-box">
-        <div id="ratingNumber" class="rating-number">0 / 10</div>
-        <div id="eggplants" class="eggplants"></div>
-        <div id="ratingLabel" class="rating-label">Unrated</div>
+      <div class="form-box" id="nameBox">
+        <label for="spinnerName">Who is spinning?</label>
+        <input id="spinnerName" type="text" maxlength="32" placeholder="Enter your name" />
       </div>
 
-      <p id="notes" class="notes"></p>
+      <div class="wheel-logo small-wheel" id="wheel">
+        <div class="wheel-ring">
+          <span>❓</span><span>🔥</span><span>🎲</span>
+          <span>💋</span><span>😈</span><span>🎭</span>
+        </div>
+      </div>
 
-      <div class="actions">
-        <button onclick="copyLink()">Copy Link</button>
+      <div id="mysteryArea" class="mystery-area hidden">
+        <p class="small-label">Mystery symbol landed on</p>
+        <div id="symbol" class="symbol">❓</div>
+        <button onclick="revealResult()">Reveal Choice</button>
+      </div>
+
+      <div id="resultArea" class="hidden">
+        <p id="nameLine" class="name-line">Someone spun:</p>
+        <h2 id="title">Mystery Spin Result</h2>
+        <p id="category" class="category">GENERAL THOTIVITIES</p>
+        <div class="rating-box">
+          <div class="rating-number">Shareable Spin</div>
+          <div id="resultText" class="notes"></div>
+        </div>
+        <div class="actions">
+          <button onclick="shareResult()">Share Result</button>
+          <button onclick="copyResult()">Copy Result</button>
+          <button class="secondary-btn" onclick="resetSpin()">Spin Again</button>
+        </div>
+      </div>
+
+      <div id="startArea" class="actions">
+        <button onclick="spinWheel()">SPIN</button>
         <a class="button secondary" href="index.html">Home</a>
       </div>
 
-      <p class="footer">Shared from the Thotivities app.</p>
+      <p class="footer">Shared from Thotivites247.</p>
     </section>
   </main>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
+    const thotivities = [
+      { symbol: "🔥", title: "Dance Break Challenge", category: "DANCE CHALLENGE" },
+      { symbol: "🎲", title: "Mystery Content Prompt", category: "VIDEO CHALLENGE" },
+      { symbol: "💋", title: "Compliment Battle", category: "THOT ADVENTURE" },
+      { symbol: "😈", title: "Truth or Dare Roulette", category: "GENERAL THOTIVITIES" },
+      { symbol: "🎭", title: "Create a 15 Second Mystery Reaction", category: "VIDEO CHALLENGE" },
+      { symbol: "👑", title: "Certified Thotivity Free Choice", category: "CERTIFIED THOTIVITY" },
+      { symbol: "⚡", title: "Quick Chaos Challenge", category: "GENERAL THOTIVITIES" },
+      { symbol: "📸", title: "Make a Thumbnail Pose Challenge", category: "VIDEO CHALLENGE" }
+    ];
 
-    const symbol = params.get("symbol") || "❓";
-    const title = params.get("title") || "Mystery Spin Result";
-    const category = params.get("category") || "GENERAL THOTIVITIES";
-    const rating = Math.max(0, Math.min(10, parseInt(params.get("rating") || "0", 10)));
-    const notes = params.get("notes") || "";
+    let currentSpin = null;
 
-    const labels = {
-      1: "Sucks Dino Dick",
-      2: "Booty Cheeks",
-      3: "Kinda Mid",
-      4: "Warm Up",
-      5: "Decent",
-      6: "Spicy",
-      7: "Dangerously Fun",
-      8: "Elite Chaos",
-      9: "Legendary",
-      10: "Certified Thotivity"
-    };
-
-    document.getElementById("symbol").textContent = symbol;
-    document.getElementById("title").textContent = title;
-    document.getElementById("category").textContent = category;
-    document.getElementById("ratingNumber").textContent = rating + " / 10";
-    document.getElementById("eggplants").textContent = rating > 0 ? "🍆".repeat(rating) : "No rating yet";
-    document.getElementById("ratingLabel").textContent = labels[rating] || "Unrated";
-    document.getElementById("notes").textContent = notes;
-
-    function copyLink() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        alert("Spin link copied!");
-      });
+    function cleanName(value) {
+      const cleaned = String(value || "").trim();
+      return cleaned.length ? cleaned : "Someone";
     }
+
+    function spinWheel() {
+      const wheel = document.getElementById("wheel");
+      document.getElementById("startArea").classList.add("hidden");
+      document.getElementById("resultArea").classList.add("hidden");
+      document.getElementById("mysteryArea").classList.add("hidden");
+
+      wheel.classList.remove("spin-animation");
+      void wheel.offsetWidth;
+      wheel.classList.add("spin-animation");
+
+      setTimeout(() => {
+        const choice = thotivities[Math.floor(Math.random() * thotivities.length)];
+        currentSpin = {
+          name: cleanName(document.getElementById("spinnerName").value),
+          ...choice
+        };
+
+        document.getElementById("symbol").textContent = currentSpin.symbol;
+        document.getElementById("mysteryArea").classList.remove("hidden");
+      }, 1600);
+    }
+
+    function revealResult() {
+      if (!currentSpin) return;
+
+      document.getElementById("mysteryArea").classList.add("hidden");
+      document.getElementById("resultArea").classList.remove("hidden");
+      document.getElementById("nameBox").classList.add("hidden");
+
+      document.getElementById("nameLine").textContent = currentSpin.name + " spun:";
+      document.getElementById("title").textContent = currentSpin.symbol + " " + currentSpin.title;
+      document.getElementById("category").textContent = currentSpin.category;
+
+      const text = currentSpin.name + " spun " + currentSpin.symbol + " " +
+        currentSpin.title + " on Thotivites247. Category: " + currentSpin.category;
+
+      document.getElementById("resultText").textContent = text;
+
+      const url = new URL(window.location.href);
+      url.searchParams.set("name", currentSpin.name);
+      url.searchParams.set("symbol", currentSpin.symbol);
+      url.searchParams.set("title", currentSpin.title);
+      url.searchParams.set("category", currentSpin.category);
+      window.history.replaceState({}, "", url);
+    }
+
+    function loadFromLink() {
+      const params = new URLSearchParams(window.location.search);
+      const title = params.get("title");
+      if (!title) return;
+
+      currentSpin = {
+        name: cleanName(params.get("name") || ""),
+        symbol: params.get("symbol") || "❓",
+        title: title,
+        category: params.get("category") || "GENERAL THOTIVITIES"
+      };
+
+      document.getElementById("startArea").classList.add("hidden");
+      revealResult();
+    }
+
+    async function shareResult() {
+      if (!currentSpin) return;
+      const text = document.getElementById("resultText").textContent;
+      const url = window.location.href;
+
+      if (navigator.share) {
+        await navigator.share({ title: "Thotivites247 Spin", text: text, url: url });
+      } else {
+        await navigator.clipboard.writeText(text + "\n" + url);
+        alert("Result copied!");
+      }
+    }
+
+    async function copyResult() {
+      if (!currentSpin) return;
+      const text = document.getElementById("resultText").textContent + "\n" + window.location.href;
+      await navigator.clipboard.writeText(text);
+      alert("Result copied!");
+    }
+
+    function resetSpin() {
+      currentSpin = null;
+      document.getElementById("mysteryArea").classList.add("hidden");
+      document.getElementById("resultArea").classList.add("hidden");
+      document.getElementById("startArea").classList.remove("hidden");
+      document.getElementById("nameBox").classList.remove("hidden");
+      const url = new URL(window.location.href);
+      url.search = "";
+      window.history.replaceState({}, "", url);
+    }
+
+    loadFromLink();
   </script>
 </body>
 </html>

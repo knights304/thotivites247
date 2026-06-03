@@ -31,16 +31,14 @@ body {
   padding: 24px;
 }
 
-.hero-card,
-.result-card {
+.hero-card, .result-card {
   width: min(720px, 100%);
   padding: 28px;
   text-align: center;
   background: rgba(18, 18, 24, 0.92);
   border: 2px solid rgba(224, 170, 255, 0.55);
   border-radius: 32px;
-  box-shadow: 0 0 30px rgba(157, 78, 221, 0.45),
-              inset 0 0 35px rgba(255, 79, 216, 0.08);
+  box-shadow: 0 0 30px rgba(157, 78, 221, 0.45), inset 0 0 35px rgba(255, 79, 216, 0.08);
   backdrop-filter: blur(12px);
 }
 
@@ -73,6 +71,34 @@ h1 {
 
 .description, .notes, .footer { color: var(--muted); }
 
+.form-box { margin: 16px auto 18px; text-align: left; }
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(224, 170, 255, 0.45);
+  background: rgba(7, 7, 10, 0.75);
+  color: var(--text);
+  font-size: 18px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 18px rgba(255, 79, 216, 0.3);
+}
+
 .wheel-logo {
   width: 240px;
   height: 240px;
@@ -84,6 +110,8 @@ h1 {
   border: 5px solid var(--purple-light);
   box-shadow: 0 0 35px rgba(255, 79, 216, 0.55);
 }
+
+.small-wheel { width: 210px; height: 210px; }
 
 .wheel-ring {
   width: 125px;
@@ -97,12 +125,31 @@ h1 {
   border: 3px solid var(--pink);
 }
 
+.spin-animation { animation: spin 1.6s cubic-bezier(.12,.72,.22,1) forwards; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(1620deg); }
+}
+
+.hidden { display: none !important; }
+
+.small-label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .symbol {
-  font-size: clamp(76px, 22vw, 160px);
+  font-size: clamp(76px, 22vw, 150px);
   line-height: 1;
-  margin: 20px 0;
+  margin: 10px 0 20px;
   filter: drop-shadow(0 0 20px var(--pink));
 }
+
+.name-line { color: var(--pink); font-weight: 900; font-size: 18px; }
 
 h2 {
   margin: 0;
@@ -112,11 +159,7 @@ h2 {
   text-shadow: 0 0 18px var(--purple);
 }
 
-.category {
-  color: var(--pink);
-  font-weight: 900;
-  letter-spacing: 1.5px;
-}
+.category { color: var(--pink); font-weight: 900; letter-spacing: 1.5px; }
 
 .rating-box {
   margin: 24px auto;
@@ -126,21 +169,7 @@ h2 {
   border: 1px solid rgba(224, 170, 255, 0.28);
 }
 
-.rating-number { font-size: 28px; font-weight: 900; }
-
-.eggplants {
-  margin: 10px 0;
-  font-size: 26px;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-
-.rating-label {
-  font-family: Creepster, cursive;
-  font-size: 34px;
-  color: var(--pink);
-  text-shadow: 0 0 16px var(--pink);
-}
+.rating-number { font-size: 24px; font-weight: 900; }
 
 .actions {
   margin-top: 20px;
@@ -150,7 +179,7 @@ h2 {
   flex-wrap: wrap;
 }
 
-button, .button {
+button, .button, .secondary-btn {
   appearance: none;
   border: none;
   cursor: pointer;
@@ -163,4 +192,4 @@ button, .button {
   box-shadow: 0 0 18px rgba(255, 79, 216, 0.35);
 }
 
-.secondary { background: var(--gray); }
+.secondary, .secondary-btn { background: var(--gray); }
