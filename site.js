@@ -11,10 +11,13 @@ const thotivities = [
 
 let currentSpin = null;
 let selectedAvatar = "🔥";
-let currentPassLink = "";
 
 function $(id) { return document.getElementById(id); }
-function cleanName(value) { const cleaned = String(value || "").trim(); return cleaned.length ? cleaned : "Someone"; }
+
+function cleanName(value) {
+  const cleaned = String(value || "").trim();
+  return cleaned.length ? cleaned : "Someone";
+}
 
 function setupAvatars() {
   document.querySelectorAll(".avatar").forEach((button) => {
@@ -36,7 +39,7 @@ function setupSpinPass() {
 
   if (spins && access && $("spinLimitBox")) {
     $("spinLimitBox").classList.remove("hidden");
-    $("spinLimitText").textContent = `Spin pass active: ${spins} spin(s)`;
+    $("spinLimitText").textContent = `App spin pass active: ${spins} spin(s)`;
   }
 }
 
@@ -90,7 +93,15 @@ function loadFromLink() {
   const params = new URLSearchParams(window.location.search);
   const title = params.get("title");
   if (!title) return;
-  currentSpin = { name: cleanName(params.get("name") || ""), avatar: params.get("avatar") || "🔥", symbol: params.get("symbol") || "❓", title, category: params.get("category") || "GENERAL THOTIVITIES" };
+
+  currentSpin = {
+    name: cleanName(params.get("name") || ""),
+    avatar: params.get("avatar") || "🔥",
+    symbol: params.get("symbol") || "❓",
+    title,
+    category: params.get("category") || "GENERAL THOTIVITIES"
+  };
+
   if ($("startArea")) $("startArea").classList.add("hidden");
   revealResult();
 }
@@ -99,8 +110,13 @@ async function shareResult() {
   if (!currentSpin) return;
   const text = $("resultText").textContent;
   const url = window.location.href;
-  if (navigator.share) await navigator.share({ title: "Thotivites247 Spin", text, url });
-  else { await navigator.clipboard.writeText(`${text}\n${url}`); alert("Result copied!"); }
+
+  if (navigator.share) {
+    await navigator.share({ title: "Thotivites247 Spin", text, url });
+  } else {
+    await navigator.clipboard.writeText(`${text}\n${url}`);
+    alert("Result copied!");
+  }
 }
 
 async function copyResult() {
@@ -122,55 +138,65 @@ function resetSpin() {
 }
 
 function cleanChallengeText(value) {
-  return String(value || "").replace(/https?:\/\/\S+/gi, "").replace(/@\w+/g, "").replace(/#thotivities?/gi, "").replace(/\s+/g, " ").trim();
+  return String(value || "")
+    .replace(/https?:\/\/\S+/gi, "")
+    .replace(/@\w+/g, "")
+    .replace(/#thotivities?/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function generatePrompt() {
   if (!$("challengeText")) return;
+
   const creator = cleanName($("creatorName").value);
   const challenge = cleanChallengeText($("challengeText").value);
   const category = $("categorySelect").value;
   const symbol = $("symbolSelect").value;
-  if (!challenge) { alert("Add a challenge first."); return; }
-  const prompt = `${symbol} ${challenge}\nCategory: ${category}\nSubmitted by: ${creator}\n#thotivities #Thotivites247`;
+
+  if (!challenge) {
+    alert("Add a challenge first.");
+    return;
+  }
+
+  const prompt =
+`${symbol} ${challenge}
+
+Category: ${category}
+Submitted by: ${creator}
+
+Reply with your own challenge using #thotivities
+#thotivities #Thotivites247`;
+
   $("promptOutput").textContent = prompt;
   $("promptCard").classList.remove("hidden");
 }
 
 async function copyPrompt() {
-  if (!$("promptOutput") || !$("promptOutput").textContent.trim()) generatePrompt();
+  if (!$("promptOutput") || !$("promptOutput").textContent.trim()) {
+    generatePrompt();
+  }
+
   await navigator.clipboard.writeText($("promptOutput").textContent);
-  alert("Prompt copied!");
+  alert("X prompt copied!");
 }
 
-function makePass(spins) {
-  const name = cleanName($("passName")?.value || "");
-  const code = Date.now().toString(36);
-  const url = new URL("https://thotivites247.pages.dev/spin.html");
-  url.searchParams.set("access", code);
-  url.searchParams.set("spins", String(spins));
-  url.searchParams.set("name", name);
-  currentPassLink = url.toString();
-  $("passOutput").textContent = `${name} has a ${spins} spin pass:\n${currentPassLink}`;
-  $("passLink").href = currentPassLink;
-  $("passCard").classList.remove("hidden");
-}
+async function sharePrompt() {
+  if (!$("promptOutput") || !$("promptOutput").textContent.trim()) {
+    generatePrompt();
+  }
 
-function makeCustomPass() {
-  const amount = Math.max(1, Math.min(99, parseInt($("customSpinCount").value || "1", 10)));
-  makePass(amount);
-}
+  const text = $("promptOutput").textContent;
 
-async function copyPass() {
-  if (!currentPassLink) { alert("Create a pass first."); return; }
-  await navigator.clipboard.writeText(currentPassLink);
-  alert("Pass link copied!");
-}
-
-async function sharePass() {
-  if (!currentPassLink) { alert("Create a pass first."); return; }
-  if (navigator.share) await navigator.share({ title: "Thotivites247 Spin Pass", text: "Spin on Thotivites247", url: currentPassLink });
-  else await copyPass();
+  if (navigator.share) {
+    await navigator.share({
+      title: "Thotivites247 X Prompt",
+      text
+    });
+  } else {
+    await navigator.clipboard.writeText(text);
+    alert("Prompt copied!");
+  }
 }
 
 setupAvatars();

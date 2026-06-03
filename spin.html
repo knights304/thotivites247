@@ -3,13 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Spin | Thotivites247</title>
+  <meta name="description" content="Spin the Thotivites247 web wheel and share the result." />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">🎰</span><span>Thotivites247</span></a>
-    <nav><a href="spin.html">Spin</a><a href="submit.html">Submit</a><a href="passes.html">Passes</a></nav>
+    <a class="brand" href="index.html">
+      <span class="brand-mark">🎰</span>
+      <span>Thotivites247</span>
+    </a>
+
+    <nav>
+      <a href="spin.html">Spin</a>
+      <a href="submit.html">Submit</a>
+    </nav>
   </header>
 
   <main class="page">
@@ -18,7 +28,9 @@
       <h1>Thotivities</h1>
       <p class="tagline">The Freaky Content Roulette</p>
 
-      <div class="spin-limit hidden" id="spinLimitBox"><strong id="spinLimitText">Spin pass active</strong></div>
+      <div class="spin-limit hidden" id="spinLimitBox">
+        <strong id="spinLimitText">Spin pass active</strong>
+      </div>
 
       <div class="form-box" id="nameBox">
         <label for="spinnerName">Who is spinning?</label>
@@ -36,7 +48,10 @@
       <div class="wheel-shell">
         <div class="pointer"></div>
         <div class="wheel-logo small-wheel" id="wheel">
-          <div class="wheel-ring"><span>❓</span><span>🔥</span><span>🎲</span><span>💋</span><span>😈</span><span>🎭</span></div>
+          <div class="wheel-ring">
+            <span>❓</span><span>🔥</span><span>🎲</span>
+            <span>💋</span><span>😈</span><span>🎭</span>
+          </div>
         </div>
       </div>
 
@@ -50,7 +65,12 @@
         <p id="nameLine" class="name-line">Someone spun:</p>
         <h2 id="title">Mystery Spin Result</h2>
         <p id="category" class="category">GENERAL THOTIVITIES</p>
-        <div class="share-card"><p id="resultText"></p><p class="hashtag">#thotivities #Thotivites247</p></div>
+
+        <div class="share-card">
+          <p id="resultText"></p>
+          <p class="hashtag">#thotivities #Thotivites247</p>
+        </div>
+
         <div class="actions">
           <button onclick="shareResult()">Share Result</button>
           <button onclick="copyResult()">Copy Result</button>
@@ -63,9 +83,10 @@
         <a class="button secondary" href="index.html">Home</a>
       </div>
 
-      <p class="footer">Shared from Thotivites247.</p>
+      <p class="footer">Spin passes are created in the Thotivities app. This page only uses them.</p>
     </section>
   </main>
+
   <script src="site.js"></script>
 </body>
 </html>
