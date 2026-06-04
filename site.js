@@ -8,27 +8,78 @@ let activities = [
 
 let currentSpin = null;
 let lastRotation = 0;
+let currentPassId = "";
+let currentPass = null;
+let passConsumedForSpin = false;
 
-function $(id) {
-  return document.getElementById(id);
-}
-
+function $(id) { return document.getElementById(id); }
 function cleanSymbol(value) {
   const s = String(value || "").trim();
-  if (!s || s === "️") return "❓";
-  return s;
+  return (!s || s === "️") ? "❓" : s;
 }
-
 function intToCssColor(value, fallback = "#9D4EDD") {
   const n = Number(value);
   if (!Number.isFinite(n)) return fallback;
-  const rgb = n & 0xFFFFFF;
-  return "#" + rgb.toString(16).padStart(6, "0");
+  return "#" + (n & 0xFFFFFF).toString(16).padStart(6, "0");
 }
-
 function cleanName(value) {
   const cleaned = String(value || "").trim();
   return cleaned.length ? cleaned : "Someone";
+}
+function passFromUrl() {
+  const params = new URLSearchParams(location.search);
+  return String(params.get("pass") || params.get("passId") || "").trim().toUpperCase();
+}
+
+async function checkPass() {
+  currentPassId = passFromUrl();
+  if (!currentPassId) return true;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/pass/check?pass=${encodeURIComponent(currentPassId)}&ts=${Date.now()}`, { cache: "no-store" });
+    const data = await res.json();
+
+    if (data.success && data.valid && data.pass) {
+      currentPass = data.pass;
+      if ($("wheelStatus")) $("wheelStatus").textContent = `Pass ${currentPass.passId}: ${currentPass.remainingSpins}/${currentPass.allowedSpins} spin(s) remaining`;
+      return true;
+    }
+
+    if ($("wheelStatus")) $("wheelStatus").textContent = `Pass invalid: ${data.reason || "unknown"}`;
+    $("startArea")?.classList.add("hidden");
+    return false;
+  } catch (err) {
+    if ($("wheelStatus")) $("wheelStatus").textContent = "Pass check failed. Try again.";
+    return false;
+  }
+}
+
+async function usePass() {
+  if (!currentPassId || passConsumedForSpin) return true;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/pass/use`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pass: currentPassId })
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.reason || "Pass could not be used.");
+      return false;
+    }
+
+    passConsumedForSpin = true;
+    currentPass = data.pass;
+
+    if ($("wheelStatus")) $("wheelStatus").textContent = `Pass ${currentPass.passId}: ${currentPass.remainingSpins}/${currentPass.allowedSpins} spin(s) remaining`;
+    return true;
+  } catch (err) {
+    alert("Could not use pass. Check internet connection.");
+    return false;
+  }
 }
 
 async function loadWheel() {
@@ -47,16 +98,13 @@ async function loadWheel() {
       }));
     }
 
-    if ($("wheelStatus")) {
-      $("wheelStatus").textContent = `Loaded ${activities.length} app-published activities`;
-    }
+    if ($("wheelStatus") && !currentPassId) $("wheelStatus").textContent = `Loaded ${activities.length} app-published activities`;
   } catch (err) {
-    if ($("wheelStatus")) {
-      $("wheelStatus").textContent = "Using fallback wheel. API did not load.";
-    }
+    if ($("wheelStatus") && !currentPassId) $("wheelStatus").textContent = "Using fallback wheel. API did not load.";
   }
 
   drawAllWheels();
+  await checkPass();
 }
 
 function drawAllWheels(rotation = 0) {
@@ -117,8 +165,9 @@ function drawWheel(canvas, rotation = 0) {
   ctx.stroke();
 }
 
-function spinWheel() {
+async function spinWheel() {
   if (!activities.length) return;
+  if (!(await usePass())) return;
 
   $("startArea")?.classList.add("hidden");
   $("resultArea")?.classList.add("hidden");
@@ -127,10 +176,7 @@ function spinWheel() {
   const winnerIndex = Math.floor(Math.random() * activities.length);
   const winner = activities[winnerIndex];
 
-  currentSpin = {
-    ...winner,
-    name: cleanName($("spinnerName")?.value)
-  };
+  currentSpin = { ...winner, name: cleanName($("spinnerName")?.value) };
 
   const count = activities.length;
   const sweep = (Math.PI * 2) / count;
@@ -147,9 +193,8 @@ function spinWheel() {
     const rot = start + (end - start) * eased;
     drawAllWheels(rot);
 
-    if (t < 1) {
-      requestAnimationFrame(animate);
-    } else {
+    if (t < 1) requestAnimationFrame(animate);
+    else {
       lastRotation = end % (Math.PI * 2);
       $("mysterySymbol").textContent = cleanSymbol(currentSpin.symbol);
       $("mysteryArea")?.classList.remove("hidden");
@@ -183,12 +228,23 @@ function revealResult() {
 
 function resetSpin() {
   currentSpin = null;
+  passConsumedForSpin = false;
+
   $("resultArea")?.classList.add("hidden");
   $("mysteryArea")?.classList.add("hidden");
   $("startArea")?.classList.remove("hidden");
   $("namePanel")?.classList.remove("hidden");
+
+  if (currentPassId && currentPass && currentPass.remainingSpins <= 0) {
+    $("startArea")?.classList.add("hidden");
+    if ($("wheelStatus")) $("wheelStatus").textContent = "Pass used up. No spins remaining.";
+  }
+
   const url = new URL(location.href);
-  url.search = "";
+  url.searchParams.delete("title");
+  url.searchParams.delete("symbol");
+  url.searchParams.delete("category");
+  url.searchParams.delete("name");
   history.replaceState({}, "", url);
 }
 
@@ -201,12 +257,8 @@ async function copyResult() {
 async function shareResult() {
   if (!currentSpin) return;
   const text = $("resultText").textContent;
-
-  if (navigator.share) {
-    await navigator.share({ title: "Thotivites247 Spin", text, url: location.href });
-  } else {
-    await copyResult();
-  }
+  if (navigator.share) await navigator.share({ title: "Thotivites247 Spin", text, url: location.href });
+  else await copyResult();
 }
 
 loadWheel();
