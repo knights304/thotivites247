@@ -1,1 +1,56 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Spin | Thotivites247</title><link rel="stylesheet" href="style.css"/></head><body><header class="site-header"><a class="brand" href="index.html"><span>🎰</span><span>Thotivites247</span></a><nav><a href="spin.html">Spin</a></nav></header><main class="page"><section class="card"><div class="badge">WEB SPIN</div><h1>Thotivities</h1><p class="tagline">Spin + Reveal</p><div class="spin-limit hidden" id="spinLimitBox"><strong id="spinLimitText">App spin pass active</strong></div><div class="form-box" id="nameBox"><label for="spinnerName">Who is spinning?</label><input id="spinnerName" type="text" maxlength="32" placeholder="Enter your name"/></div><div class="avatar-picker" id="avatarPicker"><button class="avatar active" data-avatar="🔥">🔥</button><button class="avatar" data-avatar="👑">👑</button><button class="avatar" data-avatar="💋">💋</button><button class="avatar" data-avatar="🎲">🎲</button><button class="avatar" data-avatar="😈">😈</button></div><div class="wheel-shell"><div class="pointer"></div><div class="wheel" id="wheel"><div class="wheel-ring"><span>❓</span><span>🔥</span><span>🎲</span><span>💋</span><span>😈</span><span>🎭</span></div></div></div><div id="mysteryArea" class="hidden"><p class="footer">Mystery symbol landed on</p><div id="symbol" class="symbol">❓</div><button onclick="revealResult()">REVEAL</button></div><div id="resultArea" class="hidden"><p id="nameLine" class="name-line">Someone spun:</p><h2 id="title">Mystery Spin Result</h2><p id="category" class="category">GENERAL THOTIVITIES</p><div class="share-card"><p id="resultText"></p><p class="hashtag">#thotivites #thotivities #Thotivites247</p></div><div class="actions"><button onclick="shareResult()">Share</button><button onclick="copyResult()">Copy</button><button class="secondary" onclick="resetSpin()">Spin Again</button></div></div><div id="startArea" class="actions"><button onclick="spinWheel()">SPIN</button></div><p class="footer">Passes are generated only inside the Thotivities app.</p></section></main><script src="site.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spin | Thotivites247</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="app-card">
+      <h1>Thotivities</h1>
+      <p class="subtitle">The Freaky Content Roulette</p>
+      <p id="wheelStatus" class="status">Loading app wheel...</p>
+
+      <div id="namePanel" class="input-panel">
+        <label for="spinnerName">Who is spinning?</label>
+        <input id="spinnerName" type="text" maxlength="32" placeholder="Enter name" />
+      </div>
+
+      <div class="wheel-wrap">
+        <div class="pointer">♡</div>
+        <canvas id="wheelCanvas" width="420" height="420"></canvas>
+        <div class="center-dice">⚄</div>
+      </div>
+
+      <div id="startArea">
+        <button class="main-btn" onclick="spinWheel()">▶ SPIN</button>
+      </div>
+
+      <div id="mysteryArea" class="hidden">
+        <p class="status">Mystery landed on</p>
+        <div id="mysterySymbol" class="mystery-symbol">❓</div>
+        <button class="main-btn" onclick="revealResult()">REVEAL</button>
+      </div>
+
+      <div id="resultArea" class="hidden">
+        <p id="nameLine" class="status">Someone spun:</p>
+        <h2 id="resultTitle"></h2>
+        <p id="resultCategory" class="category"></p>
+
+        <div class="share-card">
+          <p id="resultText"></p>
+          <p>#thotivites #thotivities #Thotivites247</p>
+        </div>
+
+        <button class="outline-btn" onclick="copyResult()">Copy</button>
+        <button class="outline-btn" onclick="shareResult()">Share</button>
+        <button class="outline-btn" onclick="resetSpin()">Spin Again</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="site.js"></script>
+</body>
+</html>
