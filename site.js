@@ -137,7 +137,7 @@ async function spinWheel() {
   }
   const count = activities.length;
   const sweep = (Math.PI * 2) / count;
-  const targetAngle = -Math.PI / 2 - (winnerIndex * sweep + sweep / 2);
+  const targetAngle = -(winnerIndex * sweep + sweep / 2);
   const extraSpins = Math.PI * 2 * 5;
   const start = lastRotation;
   const end = extraSpins + targetAngle;
