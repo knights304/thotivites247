@@ -1,56 +1,523 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spin | Thotivites247</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thotivities247 Spin Pass</title>
+  <style>
+    :root {
+      --purple: #9d4edd;
+      --pink: #ff4fd8;
+      --deep: #09090b;
+      --gold: #ffd700;
+      --card: rgba(14, 14, 22, 0.88);
+      --line: rgba(224, 170, 255, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top left, rgba(157, 78, 221, 0.45), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(255, 79, 216, 0.30), transparent 34%),
+        linear-gradient(160deg, #050508, #121020 55%, #000);
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .shell {
+      width: min(920px, 100%);
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: 0 0 40px rgba(157, 78, 221, 0.25);
+      border-radius: 28px;
+      padding: 18px;
+      backdrop-filter: blur(12px);
+    }
+
+    .title {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 {
+      font-size: clamp(30px, 6vw, 56px);
+      letter-spacing: 1px;
+      color: #e0aaff;
+      text-shadow: 0 0 20px rgba(224, 170, 255, 0.4);
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: #f4d7ff;
+      background: rgba(157, 78, 221, 0.16);
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 820px) {
+      .grid { grid-template-columns: 1fr 0.95fr; }
+    }
+
+    .wheel-wrap {
+      position: relative;
+      width: min(520px, 92vw);
+      aspect-ratio: 1;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 26px rgba(157, 78, 221, 0.45));
+    }
+
+    .pointer {
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 44px solid var(--gold);
+      filter: drop-shadow(0 2px 10px rgba(255, 215, 0, 0.65));
+      z-index: 3;
+    }
+
+    .center {
+      position: absolute;
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: radial-gradient(circle, #2a1242, #050508);
+      border: 3px solid rgba(224, 170, 255, .8);
+      box-shadow: inset 0 0 24px rgba(255,255,255,.08), 0 0 18px rgba(157,78,221,.6);
+      font-weight: 900;
+      padding: 10px;
+      z-index: 2;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 17px;
+      font-weight: 900;
+      color: white;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 79, 216, 0.28);
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      filter: grayscale(.4);
+    }
+
+    .secondary {
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .status {
+      display: grid;
+      gap: 10px;
+    }
+
+    .result {
+      min-height: 120px;
+      border-radius: 22px;
+      padding: 16px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .result h2 {
+      color: #fff;
+      font-size: clamp(24px, 5vw, 38px);
+      margin-bottom: 6px;
+    }
+
+    .small {
+      color: #d8c7ff;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .activity {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 10px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .error {
+      color: #ffb4b4;
+      background: rgba(255, 0, 80, .14);
+      border: 1px solid rgba(255, 100, 150, .5);
+      padding: 12px;
+      border-radius: 16px;
+    }
+  </style>
 </head>
 <body>
-  <main class="page">
-    <section class="app-card">
-      <h1>Thotivities</h1>
-      <p class="subtitle">The Freaky Content Roulette</p>
-      <p id="wheelStatus" class="status">Loading app wheel...</p>
+  <main class="shell">
+    <section class="card">
+      <div class="title">
+        <div>
+          <div class="pill" id="modePill">🎡 Loading Pass...</div>
+          <h1 id="headline">Thotivities247</h1>
+          <p class="small" id="subline">Getting your wheel ready.</p>
+        </div>
+        <button class="secondary" onclick="reloadEverything()">Refresh</button>
+      </div>
+    </section>
 
-      <div id="namePanel" class="input-panel">
-        <label for="spinnerName">Who is spinning?</label>
-        <input id="spinnerName" type="text" maxlength="32" placeholder="Enter name" />
+    <section class="grid">
+      <div class="card">
+        <div class="wheel-wrap">
+          <div class="pointer"></div>
+          <canvas id="wheel" width="900" height="900"></canvas>
+          <div class="center" id="centerText">SPIN</div>
+        </div>
+        <div style="display:grid; gap:10px; margin-top:14px;">
+          <button id="spinBtn" onclick="spinWheel()" disabled>Spin</button>
+        </div>
       </div>
 
-      <div class="wheel-wrap">
-        <div class="pointer">♡</div>
-        <canvas id="wheelCanvas" width="420" height="420"></canvas>
-        <div class="center-dice">⚄</div>
-      </div>
+      <div class="card status">
+        <div id="passInfo" class="small">Checking pass...</div>
+        <div id="errorBox"></div>
 
-      <div id="startArea">
-        <button class="main-btn" onclick="spinWheel()">▶ SPIN</button>
-      </div>
-
-      <div id="mysteryArea" class="hidden">
-        <p class="status">Mystery landed on</p>
-        <div id="mysterySymbol" class="mystery-symbol">❓</div>
-        <button class="main-btn" onclick="revealResult()">REVEAL</button>
-      </div>
-
-      <div id="resultArea" class="hidden">
-        <p id="nameLine" class="status">Someone spun:</p>
-        <h2 id="resultTitle"></h2>
-        <p id="resultCategory" class="category"></p>
-
-        <div class="share-card">
-          <p id="resultText"></p>
-          <p>#thotivites #thotivities #Thotivites247</p>
+        <div class="result">
+          <p class="small">Result</p>
+          <h2 id="resultTitle">Waiting for spin...</h2>
+          <p id="resultMeta" class="small"></p>
         </div>
 
-        <button class="outline-btn" onclick="copyResult()">Copy</button>
-        <button class="outline-btn" onclick="shareResult()">Share</button>
-        <button class="outline-btn" onclick="resetSpin()">Spin Again</button>
+        <div>
+          <h2 style="margin-bottom:10px;">Wheel Activities</h2>
+          <div class="list" id="activityList"></div>
+        </div>
       </div>
     </section>
   </main>
 
-  <script src="site.js"></script>
+<script>
+const API_BASE = "https://thotivites247-api.thot2thoughts.workers.dev";
+
+const params = new URLSearchParams(window.location.search);
+const passId = (params.get("pass") || params.get("passId") || "").trim();
+
+let wheelActivities = [];
+let currentPass = null;
+let wheelRotation = 0;
+let spinning = false;
+
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const spinBtn = document.getElementById("spinBtn");
+
+function showError(message) {
+  document.getElementById("errorBox").innerHTML = message ? `<div class="error">${escapeHtml(message)}</div>` : "";
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function colorFromValue(value, fallbackIndex = 0) {
+  const fallbacks = ["#9d4edd", "#ff4fd8", "#7b2cbf", "#e0aaff", "#ffd700", "#5a189a", "#c77dff"];
+  if (typeof value === "number") {
+    return "#" + (value & 0xffffff).toString(16).padStart(6, "0");
+  }
+  if (typeof value === "string" && value.startsWith("#")) return value;
+  return fallbacks[fallbackIndex % fallbacks.length];
+}
+
+async function fetchJson(url, options = {}) {
+  const res = await fetch(url, options);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.success === false) {
+    throw new Error(data.reason || data.error || data.message || `Request failed: ${res.status}`);
+  }
+  return data;
+}
+
+async function loadPass() {
+  if (!passId) {
+    currentPass = null;
+    document.getElementById("passInfo").textContent = "No pass in URL. Showing main public wheel.";
+    return;
+  }
+
+  const data = await fetchJson(`${API_BASE}/api/pass/check?pass=${encodeURIComponent(passId)}`);
+  if (!data.valid) throw new Error(data.reason || "Pass is not valid");
+
+  currentPass = data.pass;
+  const remaining = currentPass.remainingSpins ?? 0;
+  const allowed = currentPass.allowedSpins ?? "?";
+  const used = currentPass.usedSpins ?? 0;
+
+  document.getElementById("passInfo").innerHTML =
+    `<strong>Pass:</strong> ${escapeHtml(currentPass.name || passId)}<br>` +
+    `<strong>Spins:</strong> ${remaining} remaining / ${allowed} allowed<br>` +
+    `<strong>Used:</strong> ${used}`;
+
+  if (currentPass.themeWheel) {
+    document.getElementById("modePill").textContent =
+      `${currentPass.themeWheel.symbol || "🎡"} Theme Pass`;
+    document.getElementById("headline").textContent =
+      currentPass.themeWheel.themeName || currentPass.name || "Theme Wheel";
+    document.getElementById("subline").textContent =
+      "This link spins its own theme wheel only.";
+  }
+}
+
+async function loadWheel() {
+  const wheelUrl = passId
+    ? `${API_BASE}/api/wheel?pass=${encodeURIComponent(passId)}`
+    : `${API_BASE}/api/wheel`;
+
+  const data = await fetchJson(wheelUrl);
+
+  wheelActivities = Array.isArray(data.activities) ? data.activities : [];
+
+  if (data.source === "theme_pass") {
+    const theme = data.themeWheel || {};
+    document.getElementById("modePill").textContent = `${theme.symbol || "🎡"} Theme Pass`;
+    document.getElementById("headline").textContent = theme.themeName || "Theme Wheel";
+    document.getElementById("subline").textContent = "This is a separate wheel generated for this pass.";
+  } else if (!passId) {
+    document.getElementById("modePill").textContent = "🎡 Main Wheel";
+    document.getElementById("headline").textContent = "Thotivities247";
+    document.getElementById("subline").textContent = "Public main wheel.";
+  }
+
+  renderActivityList();
+  drawWheel();
+
+  spinBtn.disabled = wheelActivities.length === 0 || (currentPass && (currentPass.remainingSpins || 0) <= 0);
+}
+
+function renderActivityList() {
+  const el = document.getElementById("activityList");
+  if (!wheelActivities.length) {
+    el.innerHTML = `<div class="small">No activities found for this wheel.</div>`;
+    return;
+  }
+
+  el.innerHTML = wheelActivities.map((item, index) => `
+    <div class="activity">
+      <div style="font-size:26px">${escapeHtml(item.symbol || item.mysterySymbol || "🎡")}</div>
+      <div>
+        <strong>${escapeHtml(item.title || "Untitled")}</strong>
+        <div class="small">${escapeHtml(item.category || "Theme Activity")}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function drawWheel(highlightIndex = -1) {
+  const w = canvas.width;
+  const h = canvas.height;
+  const cx = w / 2;
+  const cy = h / 2;
+  const r = Math.min(w, h) * 0.45;
+
+  ctx.clearRect(0, 0, w, h);
+
+  if (!wheelActivities.length) {
+    ctx.fillStyle = "#17171c";
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#e0aaff";
+    ctx.font = "bold 42px system-ui";
+    ctx.textAlign = "center";
+    ctx.fillText("No Activities", cx, cy);
+    return;
+  }
+
+  const slice = (Math.PI * 2) / wheelActivities.length;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(wheelRotation);
+  ctx.translate(-cx, -cy);
+
+  wheelActivities.forEach((item, i) => {
+    const start = i * slice - Math.PI / 2;
+    const end = start + slice;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = i === highlightIndex ? "#ffd700" : colorFromValue(item.colorValue, i);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,.55)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(start + slice / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 24px system-ui";
+    const label = `${item.symbol || item.mysterySymbol || "🎡"} ${(item.title || "").slice(0, 18)}`;
+    ctx.fillText(label, r - 18, 8);
+    ctx.restore();
+  });
+
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(224,170,255,.85)";
+  ctx.lineWidth = 8;
+  ctx.stroke();
+}
+
+function pickResultIndex() {
+  return Math.floor(Math.random() * wheelActivities.length);
+}
+
+async function spinWheel() {
+  if (spinning || !wheelActivities.length) return;
+
+  spinning = true;
+  spinBtn.disabled = true;
+  showError("");
+
+  const resultIndex = pickResultIndex();
+  const slice = (Math.PI * 2) / wheelActivities.length;
+  const targetAngle = -((resultIndex * slice) + slice / 2);
+  const extra = Math.PI * 2 * (5 + Math.floor(Math.random() * 4));
+  const startRotation = wheelRotation;
+  const endRotation = targetAngle + extra;
+  const duration = 3600;
+  const start = performance.now();
+
+  function animate(now) {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 4);
+    wheelRotation = startRotation + (endRotation - startRotation) * eased;
+    drawWheel();
+
+    if (t < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      spinning = false;
+      wheelRotation = targetAngle;
+      drawWheel(resultIndex);
+      finishSpin(resultIndex);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+async function finishSpin(index) {
+  const item = wheelActivities[index];
+
+  document.getElementById("resultTitle").textContent = `${item.symbol || item.mysterySymbol || "🎡"} ${item.title}`;
+  document.getElementById("resultMeta").textContent = item.category || "Theme Activity";
+
+  if (!passId) {
+    spinBtn.disabled = false;
+    return;
+  }
+
+  try {
+    const data = await fetchJson(`${API_BASE}/api/pass/use`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        pass: passId,
+        title: item.title,
+        category: item.category,
+        symbol: item.symbol || item.mysterySymbol || "🎡",
+        spinnerName: "Guest"
+      })
+    });
+
+    currentPass = data.pass;
+    await loadPass();
+
+    spinBtn.disabled = (currentPass.remainingSpins || 0) <= 0;
+  } catch (err) {
+    showError(err.message);
+    spinBtn.disabled = true;
+  }
+}
+
+async function reloadEverything() {
+  try {
+    showError("");
+    spinBtn.disabled = true;
+    document.getElementById("centerText").textContent = passId ? "PASS" : "SPIN";
+    await loadPass();
+    await loadWheel();
+  } catch (err) {
+    showError(err.message);
+    drawWheel();
+  }
+}
+
+reloadEverything();
+</script>
 </body>
 </html>
